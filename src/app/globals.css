@@ -30,6 +30,11 @@ body {
   vertical-align: middle;
 }
 
+.flip-char-empty {
+  background: transparent;
+  border-color: transparent;
+}
+
 .flip-half {
   position: absolute;
   left: 0;

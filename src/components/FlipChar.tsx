@@ -35,33 +35,28 @@ export function FlipChar({ char }: FlipCharProps) {
     return () => timers.current.forEach(clearTimeout);
   }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  if (current === ' ' && phase === 'idle') {
+    return <span className="flip-char flip-char-empty" aria-hidden="true" />;
+  }
+
   return (
     <span className="flip-char" aria-label={value}>
-      {/* Top half — always shows current char top */}
       <span className="flip-half flip-top">
         <span className="flip-inner">{current}</span>
       </span>
-
-      {/* Bottom half — always shows current char bottom */}
       <span className="flip-half flip-bottom">
         <span className="flip-inner">{current}</span>
       </span>
-
-      {/* Folding flap: current char top folding down */}
       {phase === 'fold' && (
         <span className="flip-flap flip-flap-top">
           <span className="flip-inner">{current}</span>
         </span>
       )}
-
-      {/* Unfolding flap: next char bottom unfolding up */}
       {phase === 'unfold' && (
         <span className="flip-flap flip-flap-bottom">
           <span className="flip-inner">{next}</span>
         </span>
       )}
-
-      {/* Center divider */}
       <span className="flip-divider" />
     </span>
   );
