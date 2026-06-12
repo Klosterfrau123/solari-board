@@ -4,8 +4,6 @@
 
 A real-time Swiss public transport departure board with split-flap animation, built with Next.js and TypeScript. Data from [transport.opendata.ch](https://transport.opendata.ch).
 
-![Solari Board Screenshot](https://klosterfrau123.github.io/solari-board/og.png)
-
 ## Features
 
 - Split-flap (Solari) flip animation for every character
