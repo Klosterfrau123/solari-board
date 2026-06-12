@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Swiss Departure Board
 
-## Getting Started
+**Live demo → [klosterfrau123.github.io/solari-board](https://klosterfrau123.github.io/solari-board/)**
 
-First, run the development server:
+A real-time Swiss public transport departure board with split-flap animation, built with Next.js and TypeScript. Data from [transport.opendata.ch](https://transport.opendata.ch).
+
+![Solari Board Screenshot](https://klosterfrau123.github.io/solari-board/og.png)
+
+## Features
+
+- Split-flap (Solari) flip animation for every character
+- Live clock that ticks every second
+- Per-row countdown ("in X min / jetzt")
+- Station search with autocomplete (250ms debounce)
+- Favorites — saved to localStorage, max. 5
+- Auto-refresh every 30 seconds
+- Dark amber-on-black theme
+
+## Tech
+
+| | |
+|---|---|
+| Framework | Next.js 16 (App Router, static export) |
+| Language | TypeScript |
+| Animation | CSS 3D transforms (`rotateX`) |
+| Data | [transport.opendata.ch v1 API](https://transport.opendata.ch/docs.html) |
+| Hosting | GitHub Pages via GitHub Actions |
+
+## Local Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build & Export
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build        # local build
+GITHUB_PAGES=true npm run build  # static export for GitHub Pages (output: out/)
+```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/
+│   ├── page.tsx          # root page — station state + favorites
+│   └── globals.css       # all styles (no CSS framework)
+├── components/
+│   ├── SolariBoard.tsx   # board container, header, clock
+│   ├── DepartureRow.tsx  # single departure row + countdown
+│   ├── FlipText.tsx      # renders a fixed-width string as FlipChars
+│   ├── FlipChar.tsx      # single character with CSS flip animation
+│   └── StationSearch.tsx # combobox with debounced API search
+└── hooks/
+    ├── useTransportData.ts  # fetches stationboard, polls every 30s
+    └── useFavorites.ts      # localStorage-backed favorite stations
+```
