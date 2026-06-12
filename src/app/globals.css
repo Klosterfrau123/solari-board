@@ -23,16 +23,14 @@ body {
   display: inline-block;
   width: 0.68em;
   height: 1.35em;
-  background: var(--board-tile);
-  border: 1px solid var(--board-border);
-  border-radius: 2px;
+  background: transparent;
+  border: none;
   overflow: hidden;
   vertical-align: middle;
 }
 
 .flip-char-empty {
-  background: transparent;
-  border-color: transparent;
+  visibility: hidden;
 }
 
 .flip-half {
@@ -105,17 +103,7 @@ body {
   100% { transform: rotateX(0deg); }
 }
 
-/* Center divider line */
-.flip-divider {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--board-divider);
-  z-index: 10;
-  pointer-events: none;
-}
+.flip-divider { display: none; }
 
 /* ── FlipText ─────────────────────────────────────────────── */
 .flip-text {
