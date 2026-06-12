@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
+const isGhPages = process.env.GITHUB_PAGES === "true";
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "export",
+  basePath: isGhPages ? "/solari-board" : "",
+  assetPrefix: isGhPages ? "/solari-board/" : "",
 };
 
 export default nextConfig;
