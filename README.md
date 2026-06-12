@@ -1,6 +1,6 @@
 # Swiss Departure Board
 
-**Live demo → [klosterfrau123.github.io/solari-board](https://klosterfrau123.github.io/solari-board/)**
+**Live demo → [marvinbaudach.github.io/solari-board](https://marvinbaudach.github.io/solari-board/)**
 
 A real-time Swiss public transport departure board with split-flap animation, built with Next.js and TypeScript. Data from [transport.opendata.ch](https://transport.opendata.ch).
 
