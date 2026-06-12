@@ -4,6 +4,7 @@ import type { Departure } from '@/types/transport';
 interface DepartureRowProps {
   departure: Departure;
   index: number;
+  now: Date;
 }
 
 function formatTime(iso: string | null): string {
@@ -17,9 +18,18 @@ function formatDelay(delay: number | null): string {
   return `+${Math.round(delay / 60)}'`;
 }
 
-export function DepartureRow({ departure, index }: DepartureRowProps) {
+function formatCountdown(iso: string | null, now: Date): string {
+  if (!iso) return '';
+  const diff = Math.round((new Date(iso).getTime() - now.getTime()) / 60000);
+  if (diff < 0) return '';
+  if (diff === 0) return 'jetzt';
+  return `${diff} min`;
+}
+
+export function DepartureRow({ departure, index, now }: DepartureRowProps) {
   const time = formatTime(departure.stop.departure);
   const delay = formatDelay(departure.stop.delay);
+  const countdown = formatCountdown(departure.stop.departure, now);
   const platform = departure.stop.prognosis.platform ?? departure.stop.platform ?? '-';
   const delayed = (departure.stop.delay ?? 0) > 60;
 
@@ -38,11 +48,14 @@ export function DepartureRow({ departure, index }: DepartureRowProps) {
         <FlipText text={departure.to} length={22} />
       </div>
 
-      {/* Time + delay */}
+      {/* Time + delay + countdown */}
       <div className="departure-cell departure-time">
         <FlipText text={time} length={5} />
         {delay && (
           <span className="departure-delay">{delay}</span>
+        )}
+        {countdown && (
+          <span className="departure-countdown">{countdown}</span>
         )}
       </div>
 

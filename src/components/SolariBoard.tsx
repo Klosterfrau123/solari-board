@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { DepartureRow } from './DepartureRow';
 import { useTransportData } from '@/hooks/useTransportData';
 
@@ -12,7 +13,13 @@ interface SolariBoardProps {
 export function SolariBoard({ stationName, isFavorite, onToggleFavorite }: SolariBoardProps) {
   const { departures, station, loading, error } = useTransportData(stationName);
 
-  const now = new Date().toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' });
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const clockStr = now.toLocaleTimeString('de-CH', { hour: '2-digit', minute: '2-digit' });
 
   return (
     <div className="board">
@@ -28,7 +35,7 @@ export function SolariBoard({ stationName, isFavorite, onToggleFavorite }: Solar
             {isFavorite ? '★' : '☆'}
           </button>
         </div>
-        <span className="board-clock">{now}</span>
+        <span className="board-clock">{clockStr}</span>
       </div>
 
       {/* Column headers */}
@@ -51,7 +58,7 @@ export function SolariBoard({ stationName, isFavorite, onToggleFavorite }: Solar
           <div className="board-message">Keine Abfahrten gefunden</div>
         )}
         {departures.map((dep, i) => (
-          <DepartureRow key={`${dep.name}-${dep.stop.departure}-${i}`} departure={dep} index={i} />
+          <DepartureRow key={`${dep.name}-${dep.stop.departure}-${i}`} departure={dep} index={i} now={now} />
         ))}
       </div>
 

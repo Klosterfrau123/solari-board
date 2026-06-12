@@ -242,6 +242,13 @@ body {
   margin-left: 4px;
 }
 
+.departure-countdown {
+  font-size: 0.6rem;
+  color: var(--amber-faint);
+  margin-left: 5px;
+  letter-spacing: 0.03em;
+}
+
 .departure-platform {
   justify-content: flex-end;
 }
