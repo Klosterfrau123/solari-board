@@ -14,8 +14,6 @@
   --page-bg: #f4f6f8;         /* light page */
   --board-bg: #ffffff;        /* board card */
   --board-border: #e2e8f0;    /* CV photo border */
-  --tile-bg: #ffffff;         /* flip tile face */
-  --tile-seam: #e2e8f0;       /* split-flap centre seam */
   --row-alt: #f1f5f5;         /* zebra striping */
   --divider: #eef1f4;
   --danger: #c0392b;          /* delay / status red */
@@ -34,9 +32,7 @@ body {
   display: inline-block;
   width: 0.72em;
   height: 1.35em;
-  background: var(--tile-bg);
-  border: 1px solid var(--board-border);
-  border-radius: 3px;
+  background: transparent;
   overflow: hidden;
   vertical-align: middle;
   font-family: var(--font-mono);
@@ -56,7 +52,6 @@ body {
 
 .flip-top {
   top: 0;
-  border-bottom: 1px solid var(--tile-seam);
 }
 
 .flip-bottom {
@@ -92,7 +87,7 @@ body {
   right: 0;
   height: 50%;
   overflow: hidden;
-  background: var(--tile-bg);
+  background: transparent;
 }
 
 .flip-flap-top {
@@ -116,8 +111,6 @@ body {
   0%   { transform: rotateX(90deg); }
   100% { transform: rotateX(0deg); }
 }
-
-.flip-divider { display: none; }
 
 /* ── FlipText ─────────────────────────────────────────────── */
 .flip-text {
@@ -302,8 +295,8 @@ body {
   justify-content: flex-end;
 }
 
-.departure-platform-changed .flip-char {
-  border-color: var(--danger);
+.departure-platform-changed .flip-inner {
+  color: var(--danger);
 }
 
 /* ── Search ───────────────────────────────────────────────── */

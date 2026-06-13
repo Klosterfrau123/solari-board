@@ -57,7 +57,6 @@ export function FlipChar({ char }: FlipCharProps) {
           <span className="flip-inner">{next}</span>
         </span>
       )}
-      <span className="flip-divider" />
     </span>
   );
 }
