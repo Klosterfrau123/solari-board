@@ -32,7 +32,8 @@ export function useFavorites() {
   };
 
   const toggle = (station: string) => {
-    favorites.includes(station) ? remove(station) : add(station);
+    if (favorites.includes(station)) remove(station);
+    else add(station);
   };
 
   return { favorites, toggle, isFavorite: (s: string) => favorites.includes(s) };

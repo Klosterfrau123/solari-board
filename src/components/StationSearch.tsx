@@ -17,27 +17,30 @@ interface StationSearchProps {
 
 export function StationSearch({ value, onSelect, favorites }: StationSearchProps) {
   const [query, setQuery] = useState(value);
+  const [prevValue, setPrevValue] = useState(value);
   const [results, setResults] = useState<Station[]>([]);
   const [open, setOpen] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  // Sync the input back to the controlled `value` prop when it changes,
+  // without an effect (avoids a cascading render).
+  if (value !== prevValue) {
+    setPrevValue(value);
     setQuery(value);
-  }, [value]);
+  }
 
   useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (query.length < 2) return;
 
-    if (query.length < 2) {
-      setResults(DEFAULT_STATIONS);
-      return;
-    }
-
-    debounceRef.current = setTimeout(async () => {
+    // `active` guards against an out-of-order response from a stale query
+    // overwriting the results of a newer one.
+    let active = true;
+    const id = setTimeout(async () => {
       const stations = await searchStations(query);
-      setResults(stations.slice(0, 8));
+      if (active) setResults(stations.slice(0, 8));
     }, 250);
+
+    return () => { active = false; clearTimeout(id); };
   }, [query]);
 
   useEffect(() => {
@@ -65,7 +68,7 @@ export function StationSearch({ value, onSelect, favorites }: StationSearchProps
     setOpen(true);
   };
 
-  const displayResults = results.length > 0 ? results : DEFAULT_STATIONS;
+  const displayResults = query.length >= 2 && results.length > 0 ? results : DEFAULT_STATIONS;
 
   return (
     <div className="search-wrapper" ref={wrapperRef}>
@@ -106,6 +109,7 @@ export function StationSearch({ value, onSelect, favorites }: StationSearchProps
               key={s.id ?? s.name}
               className={`search-option ${s.name === value ? 'search-option-active' : ''}`}
               role="option"
+              aria-selected={s.name === value}
               onClick={() => handleSelect(s.name)}
             >
               {s.name}
