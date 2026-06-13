@@ -33,7 +33,10 @@ export function useTransportData(stationName: string) {
 
   useEffect(() => {
     if (!stationName) return;
+    // New station selected: drop stale data so the skeleton shows immediately.
     setLoading(true);
+    setDepartures([]);
+    setStation(null);
     fetchDepartures();
 
     timerRef.current = setInterval(fetchDepartures, POLL_INTERVAL);

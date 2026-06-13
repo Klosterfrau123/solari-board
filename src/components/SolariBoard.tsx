@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { DepartureRow } from './DepartureRow';
+import { BoardSkeleton } from './BoardSkeleton';
 import { useTransportData } from '@/hooks/useTransportData';
 
 interface SolariBoardProps {
@@ -48,8 +49,8 @@ export function SolariBoard({ stationName, isFavorite, onToggleFavorite }: Solar
 
       {/* Rows */}
       <div className="board-rows" role="table" aria-label="Abfahrten">
-        {loading && departures.length === 0 && (
-          <div className="board-message">Lade Abfahrten…</div>
+        {loading && departures.length === 0 && !error && (
+          <BoardSkeleton />
         )}
         {error && (
           <div className="board-message board-error">{error}</div>

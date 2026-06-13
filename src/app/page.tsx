@@ -16,9 +16,10 @@ export default function Home() {
       <div style={{ marginBottom: 8 }}>
         <h1 style={{
           fontSize: '0.65rem',
+          fontWeight: 700,
           letterSpacing: '0.2em',
           textTransform: 'uppercase',
-          color: 'var(--amber-faint)',
+          color: 'var(--accent)',
           marginBottom: 16,
         }}>
           Swiss Departure Board

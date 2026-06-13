@@ -14,8 +14,9 @@ function formatTime(iso: string | null): string {
 }
 
 function formatDelay(delay: number | null): string {
-  if (!delay || delay < 60) return '';
-  return `+${Math.round(delay / 60)}'`;
+  // The opendata.ch API reports delay in minutes.
+  if (!delay || delay < 1) return '';
+  return `+${delay}'`;
 }
 
 function formatCountdown(iso: string | null, now: Date): string {
@@ -31,7 +32,7 @@ export function DepartureRow({ departure, index, now }: DepartureRowProps) {
   const delay = formatDelay(departure.stop.delay);
   const countdown = formatCountdown(departure.stop.departure, now);
   const platform = departure.stop.prognosis.platform ?? departure.stop.platform ?? '-';
-  const delayed = (departure.stop.delay ?? 0) > 60;
+  const delayed = (departure.stop.delay ?? 0) >= 1;
 
   return (
     <div
@@ -61,7 +62,7 @@ export function DepartureRow({ departure, index, now }: DepartureRowProps) {
 
       {/* Platform */}
       <div className={`departure-cell departure-platform ${delayed ? 'departure-platform-changed' : ''}`}>
-        <FlipText text={platform} length={3} />
+        <FlipText text={platform} length={5} align="right" />
       </div>
     </div>
   );
