@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { searchStations } from '@/hooks/useTransportData';
+import { dedupeStationsByName } from '@/lib/station';
 import type { Station } from '@/types/transport';
 
 const DEFAULT_STATIONS: Station[] = [
@@ -37,7 +38,7 @@ export function StationSearch({ value, onSelect, favorites }: StationSearchProps
     let active = true;
     const id = setTimeout(async () => {
       const stations = await searchStations(query);
-      if (active) setResults(stations.slice(0, 8));
+      if (active) setResults(dedupeStationsByName(stations).slice(0, 8));
     }, 250);
 
     return () => { active = false; clearTimeout(id); };

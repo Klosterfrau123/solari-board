@@ -24,7 +24,7 @@ function formatCountdown(iso: string | null, now: Date): string {
   const diff = Math.round((new Date(iso).getTime() - now.getTime()) / 60000);
   if (diff < 0) return '';
   if (diff === 0) return 'jetzt';
-  return `${diff} min`;
+  return `${diff}′`;
 }
 
 export function DepartureRow({ departure, index, now }: DepartureRowProps) {
@@ -38,31 +38,36 @@ export function DepartureRow({ departure, index, now }: DepartureRowProps) {
     <div
       className={`departure-row ${index % 2 === 0 ? 'departure-row-even' : 'departure-row-odd'}`}
       role="row"
+      style={{ '--row-index': index } as React.CSSProperties}
     >
       {/* Train name */}
       <div className="departure-cell departure-name">
-        <FlipText text={departure.name} length={8} />
+        <FlipText text={departure.name} length={7} />
       </div>
 
       {/* Destination */}
       <div className="departure-cell departure-destination">
-        <FlipText text={departure.to} length={22} />
+        <FlipText text={departure.to} length={18} />
       </div>
 
-      {/* Time + delay + countdown */}
+      {/* Scheduled time + delay */}
       <div className="departure-cell departure-time">
         <FlipText text={time} length={5} />
         {delay && (
           <span className="departure-delay">{delay}</span>
         )}
+      </div>
+
+      {/* Countdown (own column) */}
+      <div className="departure-cell departure-eta">
         {countdown && (
           <span className="departure-countdown">{countdown}</span>
         )}
       </div>
 
-      {/* Platform */}
+      {/* Platform — width follows the value (e.g. "7" vs "41 / 42"), capped at 7 */}
       <div className={`departure-cell departure-platform ${delayed ? 'departure-platform-changed' : ''}`}>
-        <FlipText text={platform} length={5} align="right" />
+        <FlipText text={platform} length={Math.min(Math.max(platform.length, 1), 7)} align="right" />
       </div>
     </div>
   );

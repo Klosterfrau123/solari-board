@@ -1,45 +1,83 @@
 @import "tailwindcss";
 
-/* ── Base ─────────────────────────────────────────────────── */
-/* Palette matched to Marvin's CV: teal accent on a light, clean
-   surface with slate ink and Lato typography. */
+/* ─────────────────────────────────────────────────────────────────
+   SWISS DEPARTURE BOARD — "Bahnhofshalle"
+   Authentic Solari split-flap: amber glyphs on dark mechanical flaps,
+   each cut by a center seam, mounted on a near-black board. DM Mono
+   for the flaps, Lato for the station chrome.
+   ───────────────────────────────────────────────────────────────── */
 :root {
-  --accent: #0d7377;          /* CV teal */
-  --accent-strong: #0a585b;   /* darker teal for hover/active */
-  --accent-soft: #0d73771a;   /* ~10% teal tint for fills */
-  --accent-border: #0d737759; /* ~35% teal for borders */
-  --ink: #2e2e2e;             /* CV emphasis (slate) */
-  --ink-soft: #444444;        /* CV body grey */
-  --muted: #8a97a0;           /* tertiary labels */
-  --page-bg: #f4f6f8;         /* light page */
-  --board-bg: #ffffff;        /* board card */
-  --board-border: #e2e8f0;    /* CV photo border */
-  --row-alt: #f1f5f5;         /* zebra striping */
-  --divider: #eef1f4;
-  --danger: #c0392b;          /* delay / status red */
-  --font-mono: 'Courier New', Courier, monospace;
+  --page-bg:      #07070a;
+  --board-bg:     #0c0c10;
+  --board-edge:   #000000;
+  --flap-hi:      #212126;   /* top of a flap */
+  --flap-lo:      #16161b;   /* bottom of a flap */
+  --flap-face:    #1a1a1f;
+  --seam:         rgba(0, 0, 0, 0.8);
+
+  --amber:        #f4ad2a;   /* glyph amber */
+  --amber-strong: #ffc24d;
+  --amber-glow:   rgba(244, 173, 42, 0.28);
+  --amber-soft:   rgba(244, 173, 42, 0.10);
+  --amber-border: rgba(244, 173, 42, 0.32);
+
+  --ink:          #ece7da;   /* light chrome text */
+  --ink-soft:     #b9b3a4;
+  --muted:        #6f6a5d;
+  --divider:      rgba(255, 255, 255, 0.05);
+  --danger:       #ff6a5a;
+
+  /* legacy aliases so inline var(--accent) usages stay amber */
+  --accent:       var(--amber);
+  --accent-strong:var(--amber-strong);
+  --accent-soft:  var(--amber-soft);
+  --accent-border:var(--amber-border);
+
+  --font-mono: var(--font-flap), 'DM Mono', ui-monospace, monospace;
+
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 body {
-  background: var(--page-bg);
+  background:
+    radial-gradient(140% 120% at 50% -10%, #101016 0%, var(--page-bg) 60%);
   color: var(--ink-soft);
   font-family: var(--font-lato), 'Lato', system-ui, sans-serif;
+  min-height: 100vh;
 }
 
-/* ── Flip character ───────────────────────────────────────── */
+/* ── Flip character ───────────────────────────────────────────── */
 .flip-char {
   position: relative;
   display: inline-block;
   width: 0.72em;
-  height: 1.35em;
-  background: transparent;
+  height: 1.4em;
+  margin: 0 0.4px;
+  background: var(--flap-face);
+  border-radius: 2px;
   overflow: hidden;
   vertical-align: middle;
   font-family: var(--font-mono);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.55),
+    0 1px 1px rgba(0, 0, 0, 0.5);
 }
 
-.flip-char-empty {
-  visibility: hidden;
+.flip-char-empty { visibility: hidden; }
+
+/* center seam between the two flaps */
+.flip-char::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  transform: translateY(-0.5px);
+  background: var(--seam);
+  z-index: 4;
+  pointer-events: none;
 }
 
 .flip-half {
@@ -52,10 +90,14 @@ body {
 
 .flip-top {
   top: 0;
+  background: linear-gradient(180deg, var(--flap-hi), var(--flap-lo));
+  border-radius: 2px 2px 0 0;
 }
 
 .flip-bottom {
   bottom: 0;
+  background: linear-gradient(180deg, #131318, var(--flap-hi));
+  border-radius: 0 0 2px 2px;
 }
 
 .flip-inner {
@@ -67,18 +109,15 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1em;
+  font-weight: 500;
   line-height: 1;
-  color: var(--ink);
+  color: var(--amber);
+  text-shadow: 0 0 7px var(--amber-glow);
   user-select: none;
 }
 
-.flip-top .flip-inner {
-  top: 0;
-}
-
-.flip-bottom .flip-inner {
-  bottom: 0;
-}
+.flip-top .flip-inner { top: 0; }
+.flip-bottom .flip-inner { bottom: 0; }
 
 /* Animated flaps */
 .flip-flap {
@@ -87,17 +126,21 @@ body {
   right: 0;
   height: 50%;
   overflow: hidden;
-  background: transparent;
+  z-index: 3;
 }
 
 .flip-flap-top {
   top: 0;
+  background: linear-gradient(180deg, var(--flap-hi), var(--flap-lo));
+  border-radius: 2px 2px 0 0;
   transform-origin: bottom center;
   animation: foldDown 0.14s ease-in forwards;
 }
 
 .flip-flap-bottom {
   bottom: 0;
+  background: linear-gradient(180deg, #131318, var(--flap-hi));
+  border-radius: 0 0 2px 2px;
   transform-origin: top center;
   animation: unfoldUp 0.14s ease-out forwards;
 }
@@ -112,52 +155,55 @@ body {
   100% { transform: rotateX(0deg); }
 }
 
-/* ── FlipText ─────────────────────────────────────────────── */
+/* ── FlipText ─────────────────────────────────────────────────── */
 .flip-text {
   display: inline-flex;
-  gap: 2px;
+  gap: 1px;
 }
 
-/* ── Board ────────────────────────────────────────────────── */
+/* ── Board ────────────────────────────────────────────────────── */
 .board {
   background: var(--board-bg);
-  border: 1px solid var(--board-border);
+  border: 1px solid var(--board-edge);
   border-radius: 10px;
   overflow: hidden;
   width: 100%;
-  box-shadow: 0 6px 24px -12px rgba(13, 115, 119, 0.25);
+  min-width: 560px;   /* below this the board scrolls instead of cramping */
+  box-shadow:
+    0 40px 90px -50px rgba(0, 0, 0, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .board-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
-  background: var(--accent-soft);
-  border-bottom: 1px solid var(--board-border);
+  padding: 15px 16px;
+  background: linear-gradient(180deg, #15151a, #0e0e12);
+  border-bottom: 1px solid #000;
 }
 
 .board-station {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.06em;
+  color: var(--amber);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  text-shadow: 0 0 18px var(--amber-glow);
 }
 
 .board-fav-btn {
   background: none;
   border: none;
-  color: var(--accent);
+  color: var(--amber);
   font-size: 1.2rem;
   cursor: pointer;
   padding: 0 0 0 10px;
-  transition: color 0.15s;
+  transition: color 0.15s, transform 0.25s var(--ease-spring);
 }
 
-.board-fav-btn:hover {
-  color: var(--accent-strong);
-}
+.board-fav-btn:hover { color: var(--amber-strong); transform: scale(1.18); }
+.board-fav-btn:active { transform: scale(0.92); }
 
 .board-header-left {
   display: flex;
@@ -165,23 +211,29 @@ body {
 }
 
 .board-clock {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-family: var(--font-mono);
-  color: var(--accent-strong);
-  letter-spacing: 0.1em;
+  color: var(--amber);
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
 }
 
 .board-columns {
   display: grid;
-  grid-template-columns: 130px 1fr 90px 92px;
-  padding: 8px 20px;
+  grid-template-columns: 88px 1fr 78px 50px 82px;
+  padding: 9px 16px;
   font-size: 0.6rem;
   font-weight: 700;
   color: var(--muted);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  border-bottom: 1px solid var(--board-border);
+  letter-spacing: 0.16em;
+  border-bottom: 1px solid #000;
+  background: #0a0a0d;
 }
+
+/* "In" (countdown) and "Gleis" headers align right over their cells */
+.board-columns span:nth-child(4),
+.board-columns span:nth-child(5) { text-align: right; }
 
 .board-rows {
   min-height: 200px;
@@ -194,24 +246,24 @@ body {
   font-size: 0.85rem;
 }
 
-/* ── Skeleton (loading) ───────────────────────────────────── */
+/* ── Skeleton (loading) ───────────────────────────────────────── */
 .skeleton-row {
   display: grid;
-  grid-template-columns: 130px 1fr 90px 92px;
+  grid-template-columns: 88px 1fr 78px 50px 82px;
   align-items: center;
   gap: 12px;
-  padding: 9px 20px;
+  padding: 10px 16px;
   border-bottom: 1px solid var(--divider);
 }
 
 .skeleton-block {
-  height: 1.1rem;
-  border-radius: 3px;
+  height: 1.2rem;
+  border-radius: 2px;
   background: linear-gradient(
     90deg,
-    var(--row-alt) 25%,
-    var(--accent-soft) 37%,
-    var(--row-alt) 63%
+    #16161b 25%,
+    rgba(244, 173, 42, 0.12) 37%,
+    #16161b 63%
   );
   background-size: 400% 100%;
   animation: skeleton-shimmer 1.4s ease infinite;
@@ -227,9 +279,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .skeleton-block {
-    animation: none;
-  }
+  .skeleton-block { animation: none; }
 }
 
 .board-error {
@@ -237,58 +287,69 @@ body {
 }
 
 .board-footer {
-  padding: 8px 20px;
+  padding: 9px 16px;
   font-size: 0.6rem;
   color: var(--muted);
-  border-top: 1px solid var(--board-border);
-  letter-spacing: 0.05em;
+  border-top: 1px solid #000;
+  letter-spacing: 0.08em;
+  background: #0a0a0d;
 }
 
-/* ── Departure rows ───────────────────────────────────────── */
+/* ── Departure rows ───────────────────────────────────────────── */
 .departure-row {
   display: grid;
-  grid-template-columns: 130px 1fr 90px 92px;
+  grid-template-columns: 88px 1fr 78px 50px 82px;
   align-items: center;
-  padding: 7px 20px;
+  padding: 7px 16px;
   border-bottom: 1px solid var(--divider);
   transition: background 0.15s;
+  /* staggered reveal on mount / station change (one-shot; survives the
+     per-second countdown re-render because rows are keyed & not remounted) */
+  animation: rowIn 0.5s var(--ease-out) both;
+  animation-delay: calc(var(--row-index, 0) * 35ms);
 }
 
-.departure-row-even {
-  background: var(--board-bg);
+@keyframes rowIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.departure-row-odd {
-  background: var(--row-alt);
+@media (prefers-reduced-motion: reduce) {
+  .departure-row { animation: none; }
 }
 
-.departure-row:hover {
-  background: var(--accent-soft);
-}
+.departure-row-even { background: transparent; }
+.departure-row-odd  { background: rgba(255, 255, 255, 0.018); }
+
+.departure-row:hover { background: var(--amber-soft); }
 
 .departure-cell {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--ink);
+  min-width: 0;
+  overflow: hidden;   /* safety net: clip at the cell edge, never bleed into neighbours */
 }
-
-.departure-name { }
-.departure-destination { }
-.departure-time { }
 
 .departure-delay {
   font-size: 0.65rem;
   color: var(--danger);
   margin-left: 4px;
+  font-family: var(--font-mono);
+}
+
+.departure-eta {
+  justify-content: flex-end;
 }
 
 .departure-countdown {
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   color: var(--muted);
-  margin-left: 5px;
   letter-spacing: 0.03em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .departure-platform {
@@ -297,9 +358,10 @@ body {
 
 .departure-platform-changed .flip-inner {
   color: var(--danger);
+  text-shadow: 0 0 7px rgba(255, 106, 90, 0.3);
 }
 
-/* ── Search ───────────────────────────────────────────────── */
+/* ── Search ───────────────────────────────────────────────────── */
 .search-wrapper {
   position: relative;
   width: 100%;
@@ -309,8 +371,8 @@ body {
 .search-box {
   display: flex;
   align-items: center;
-  background: var(--board-bg);
-  border: 1px solid var(--board-border);
+  background: #121216;
+  border: 1px solid #26262d;
   border-radius: 8px;
   padding: 0 14px;
   gap: 10px;
@@ -318,14 +380,14 @@ body {
 }
 
 .search-box:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  border-color: var(--amber-border);
+  box-shadow: 0 0 0 3px var(--amber-soft);
 }
 
 .search-icon {
   font-size: 0.85rem;
-  color: var(--accent);
-  opacity: 0.7;
+  color: var(--amber);
+  opacity: 0.8;
 }
 
 .search-input {
@@ -340,24 +402,33 @@ body {
   letter-spacing: 0.02em;
 }
 
-.search-input::placeholder {
-  color: var(--muted);
-}
+.search-input::placeholder { color: var(--muted); }
 
 .search-dropdown {
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: var(--board-bg);
-  border: 1px solid var(--board-border);
+  background: #121216;
+  border: 1px solid #26262d;
   border-radius: 8px;
   overflow: hidden;
   z-index: 50;
   list-style: none;
   margin: 0;
   padding: 0;
-  box-shadow: 0 8px 24px -12px rgba(46, 46, 46, 0.25);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.85);
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.2s ease, transform 0.2s var(--ease-out);
+}
+
+/* Modern entry animation when the dropdown mounts (CSS-only, no JS) */
+@starting-style {
+  .search-dropdown {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 }
 
 .search-option {
@@ -369,24 +440,22 @@ body {
   transition: background 0.1s, color 0.1s;
 }
 
-.search-option:last-child {
-  border-bottom: none;
-}
+.search-option:last-child { border-bottom: none; }
 
 .search-option:hover,
 .search-option-active {
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: var(--amber-soft);
+  color: var(--amber);
 }
 
 .search-dropdown-label {
-  padding: 6px 14px 4px;
+  padding: 7px 14px 5px;
   font-size: 0.55rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--muted);
-  border-bottom: 1px solid var(--board-border);
+  border-bottom: 1px solid var(--divider);
 }
 
 .search-clear {
@@ -400,9 +469,7 @@ body {
   transition: color 0.15s;
 }
 
-.search-clear:hover {
-  color: var(--accent);
-}
+.search-clear:hover { color: var(--amber); }
 
 .search-favorites {
   display: flex;
@@ -412,20 +479,24 @@ body {
 }
 
 .fav-chip {
-  background: var(--accent-soft);
-  border: 1px solid var(--accent-border);
+  background: var(--amber-soft);
+  border: 1px solid var(--amber-border);
   border-radius: 20px;
   padding: 4px 12px;
   font-size: 0.75rem;
-  color: var(--accent);
+  color: var(--amber);
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s,
+              transform 0.25s var(--ease-spring);
 }
 
 .fav-chip:hover,
 .fav-chip-active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #ffffff;
+  background: var(--amber);
+  border-color: var(--amber);
+  color: #1a1205;
+  font-weight: 700;
 }
+
+.fav-chip:hover { transform: translateY(-1px) scale(1.03); }

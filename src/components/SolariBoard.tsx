@@ -44,6 +44,7 @@ export function SolariBoard({ stationName, isFavorite, onToggleFavorite }: Solar
         <span>Zug</span>
         <span>Richtung</span>
         <span>Abfahrt</span>
+        <span>In</span>
         <span>Gleis</span>
       </div>
 

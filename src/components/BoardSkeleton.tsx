@@ -13,6 +13,7 @@ export function BoardSkeleton({ rows = 8 }: BoardSkeletonProps) {
           <span className="skeleton-block" style={{ width: 70 }} />
           <span className="skeleton-block" style={{ width: DEST_WIDTHS[i % DEST_WIDTHS.length] }} />
           <span className="skeleton-block" style={{ width: 46 }} />
+          <span className="skeleton-block skeleton-block-end" style={{ width: 34 }} />
           <span className="skeleton-block skeleton-block-end" style={{ width: 24 }} />
         </div>
       ))}
